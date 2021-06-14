@@ -29,7 +29,7 @@ then
 fi
 
 curl --fail --retry 6 -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | bash
-yum install gitlab-runner-${gitlab_runner_version} -y
+yum install gitlab-runner-${gitlab_runner_version} -y ${gitlab_gpg_check}
 
 if [[ `echo ${docker_machine_download_url}` == "" ]]
 then

@@ -687,3 +687,10 @@ variable "docker_machine_iam_policy_arns" {
   description = "List of policy ARNs to be added to the instance profile of the docker machine runners."
   default     = []
 }
+
+variable "disble_gpg_check" {
+  type        = bool
+  description = "Skip the GPG check for Gitlab packages on the userdata. Related to https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27470"
+  default     = false
+
+}

@@ -38,7 +38,7 @@ resource "null_resource" "remove_runner" {
 }
 
 locals {
-  enable_asg_recreation = var.enable_forced_updates != null ? ! var.enable_forced_updates : var.enable_asg_recreation
+  enable_asg_recreation = var.enable_forced_updates != null ? !var.enable_forced_updates : var.enable_asg_recreation
 
   template_user_data = templatefile("${path.module}/template/user-data.tpl",
     {
@@ -51,6 +51,8 @@ locals {
   template_eip = templatefile("${path.module}/template/eip.tpl", {
     eip = join(",", aws_eip.gitlab_runner.*.public_ip)
   })
+
+  gitlab_gpg_check = var.disable_gpg_check ? "--nogpgcheck" : ""
 
   template_gitlab_runner = templatefile("${path.module}/template/gitlab-runner.tpl",
     {
@@ -73,6 +75,7 @@ locals {
       gitlab_runner_run_untagged                   = var.gitlab_runner_registration_config["run_untagged"]
       gitlab_runner_maximum_timeout                = var.gitlab_runner_registration_config["maximum_timeout"]
       gitlab_runner_access_level                   = lookup(var.gitlab_runner_registration_config, "access_level", "not_protected")
+      gitlab_gpg_check                             = local.gitlab_gpg_check
   })
 
   template_runner_config = templatefile("${path.module}/template/runner-config.tpl",
@@ -125,7 +128,7 @@ locals {
       runners_root_size                 = var.runners_root_size
       runners_iam_instance_profile_name = var.runners_iam_instance_profile_name
       runners_use_private_address_only  = var.runners_use_private_address
-      runners_use_private_address       = ! var.runners_use_private_address
+      runners_use_private_address       = !var.runners_use_private_address
       runners_request_spot_instance     = var.runners_request_spot_instance
       runners_environment_vars          = jsonencode(var.runners_environment_vars)
       runners_pre_build_script          = var.runners_pre_build_script
